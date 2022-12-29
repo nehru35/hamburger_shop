@@ -1,7 +1,10 @@
 const mysql = require('mysql2');
 const express = require('express');
-const app = express();
 const bodyparser = require('body-parser');
+const cors = require('cors');
+const app = express();
+
+app.use(cors());
 
 app.use(bodyparser.json());
 
@@ -42,6 +45,17 @@ app.get("/listaCarnes", (req, res) => {
     })
 })
 
+// Getting all everything from table lista_de_opcionais
+app.get("/listaOpcionais", (req, res) => {
+    connection.query('SELECT * FROM lista_de_opcionais', (error, rows, fields) => {
+        if (error) {
+            console.log(error);
+        } else {
+            res.send(rows);
+        }
+    })
+})
+
 // Getting all everything from table status_do_pedido
 app.get("/statusPedido", (req, res) => {
     connection.query('SELECT * FROM status_do_pedido', (error, rows, fields) => {
@@ -54,7 +68,7 @@ app.get("/statusPedido", (req, res) => {
 })
 
 // Getting all everything from table pedidos
-app.get("/pedidos", (req, res) => {
+app.get("/listarPedidos", (req, res) => {
     connection.query('SELECT * FROM pedidos', (error, rows, fields) => {
         if (error) {
             console.log(error);
@@ -65,40 +79,9 @@ app.get("/pedidos", (req, res) => {
 })
 
 // Deleting a row from table pedidos
-app.delete("/pedidos/:id", (req, res) => {
-    connection.query('DELETE FROM pedido WHERE id = ?', [req.params.id], (error, rows, fields) => {
-        if (error) {
-            console.log(error);
-        } else {
-            res.send('DELETED');
-        }
-    })
-})
-
-// Iserting into table pedidos
-app.post("/pedidos/:id", (req, res) => {
-    let strOpcionais = JSON.stringify(req.params.opcionais);
-    let params = [
-        req.params.nome_cliente,
-        req.params.carne,
-        req.params.pao,
-        req.params.nome_cliente,
-        strOpcionais
-    ]
-    
-    let sql = "INSER INTO pedidos(nome_cliente, carne, pao, opcionais) VALUES(?, ?, ?, ?)";
-    connection.query(sql, params, (error, rows, fields) => {
-        if (error) {
-            console.log(error);
-        } else {
-            res.send('ADDED');
-        }
-    })
-})
-
-// Getting all everything from table lista_de_opcionais
-app.get("/listaOpcionais", (req, res) => {
-    connection.query('SELECT * FROM lista_de_opcionais', (error, rows, fields) => {
+app.post("/eliminarPedido", (req, res) => {
+    console.log(req);
+    connection.query('DELETE FROM pedidos WHERE id = ?', [req.body.id], (error, rows, fields) => {
         if (error) {
             console.log(error);
         } else {
@@ -106,6 +89,45 @@ app.get("/listaOpcionais", (req, res) => {
         }
     })
 })
+
+// Iserting into table pedidos
+app.post("/novoPedido", (req, res) => {
+    let strOpcionais = JSON.stringify(req.body.opcionais);
+    let params = [
+        req.body.nome_cliente,
+        req.body.carne,
+        req.body.pao,
+        strOpcionais,
+        req.body.status
+    ]
+    
+    let sql = "INSERT INTO pedidos(nomo_cliente, carne, pao, opcionais, status) VALUES(?, ?, ?, ?, ?)";
+    connection.query(sql, params, (error, rows, fields) => {
+        if (error) {
+            console.log(error);
+        } else {
+            res.send(rows);
+        }
+    })
+})
+
+// Updating
+app.post("/actualizarPedidos", (req, res) => {
+    let params = [
+        req.body.status,
+        req.body.id
+    ]
+    
+    let sql = "UPDATE pedidos SET status = ? WHERE id = ?";
+    connection.query(sql, params, (error, rows, fields) => {
+        if (error) {
+            console.log(error);
+        } else {
+            res.send(rows);
+        }
+    })
+})
+
 
 app.listen(3045, () => {
     console.log('Server running at port: ', 3045);

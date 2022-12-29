@@ -13,8 +13,8 @@
                     <label for="pao">Escolha o pão: </label>
                     <select name="pao" id="pao" v-model="pao">
                         <option value="">Selecione o seu pão</option>
-                        <option v-for="pao in paes" :key="pao.id" :value="pao.tipo">
-                            {{ pao.tipo }}
+                        <option v-for="pao in paes" :key="pao.id" :value="pao.descricao">
+                            {{ pao.descricao }}
                         </option>
                     </select>
                 </div>
@@ -23,8 +23,8 @@
                     <label for="carne">Escolha a carne: </label>
                     <select name="carne" id="carne" v-model="carne">   
                         <option value="">Selecione o tipo de carne</option>
-                        <option v-for="carne in carnes" :key="carne.id" :value="carne.tipo">
-                            {{ carne.tipo }}
+                        <option v-for="carne in carnes" :key="carne.id" :value="carne.descricao">
+                            {{ carne.descricao }}
                         </option>
                     </select>
                 </div>
@@ -32,8 +32,8 @@
                 <div id="opcionais-container" class="input-container">
                     <label id="opcionais-title" for="opicionais">Selecione os opcionais: </label>
                     <div class="checkbox-container" v-for="opcional in opcionaisdata" :key="opcional.id">
-                        <input type="checkbox" name="opcionais" v-model="opcionais" :value="opcional.tipo">
-                        <span> {{ opcional.tipo }}</span>
+                        <input type="checkbox" name="opcionais" v-model="opcionais" :value="opcional.descricao">
+                        <span> {{ opcional.descricao}}</span>
                     </div>
                 </div>
 
@@ -47,6 +47,11 @@
 
 <script>
     import Message from './message.vue';
+    import pedidosService from '@/services/pedidosService';
+    import paesService from '@/services/paesService';
+    import carneService from '@/services/carneService';
+    import opcionaisService from '@/services/opcionaisService';
+
     export default {
         name: 'BurgerForm',
         data() {
@@ -65,15 +70,39 @@
         components: {
             Message
         },
-        methods: {
-            // LER OS DADOS DO bd
-            async getIngredientes() {
-                const req = await fetch("http://localhost:3000/ingredientes");
-                const data = await req.json();
+        
+        mounted() {
+            this.getListaPaes();
+            this.getListaCarnes();
+            this.getOpcionais();
+        },
 
-                this.paes = data.paes;
-                this.carnes = data.carnes;
-                this.opcionaisdata = data.opcionais;
+        methods: {
+            // TRAZENDO OS PAES
+            async getListaPaes() {
+                try {
+                    this.paes = await paesService.listarPaes().then((res) => res.data);
+                } catch (error) {
+                    console.log(error);
+                }
+            },
+
+            // TRAZENDO AS CARNES
+            async getListaCarnes() {
+                try {
+                    this.carnes = await carneService.listarCarnes().then((res) => res.data);
+                } catch (error) {
+                    console.log(error);
+                }
+            },
+
+            // TRAZENDO OS OPCIONAIS
+            async getOpcionais() {
+                try {
+                    this.opcionaisdata = await opcionaisService.listarOpcionais().then((res) => res.data);
+                } catch (error) {
+                    console.log(error);
+                }
             },
 
             // INSERIR DADOS
@@ -81,38 +110,34 @@
                 e.preventDefault()
 
                 const data = {
-                    nome: this.nome,
+                    nome_cliente: this.nome,
                     carne: this.carne,
                     pao: this.pao,
                     opcionais: Array.from(this.opcionais),
                     status: "Solicitado"
                 }
 
-                const datajson = JSON.stringify(data)
-                
-                const req = await fetch('http://localhost:3000/burgers', {
-                    method: "POST",
-                    headers: {"Content-Type":"application/json"},
-                    body: datajson
-                })
+                try {
+                    await pedidosService.novoPedido(data).then((res) => {
+                        if(res.status === 200 && res.data.affectedRows >= 1) {
 
-                const res = await req.json();
-                
-                // colocar uma mensagem no sitema
-                this.msg = `Pedido Nº ${res.id} realizado com sucesso!`;
-
-                // Limpar mensagem
-                setTimeout(() => this.msg = "", 3000)
-
-                // Limpar os campos
-                this.nome = "";
-                this.carne = "";
-                this.pao = "",
-                this.opcionais = ""
+                            // colocar uma mensagem no sitema
+                            this.msg = `Pedido realizado com sucesso!`;
+    
+                            // Limpar mensagem
+                            setTimeout(() => this.msg = "", 3000)
+                        }
+                    })
+                } catch (error) {
+                    console.log(error);                    
+                } finally {
+                    // Limpar os campos
+                    this.nome = "";
+                    this.carne = "";
+                    this.pao = "",
+                    this.opcionais = [];
+                }
             }
-        },
-        mounted() {
-            this.getIngredientes();
         }
     }
 </script>

@@ -5,9 +5,11 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "beckend": "json-server --watch db/db.json"
+    "beckend": "json-server --watch ./db/db.json",
+    "front-end": "npm run serve"
   },
   "dependencies": {
+    "axios": "^1.2.1",
     "core-js": "^3.8.3",
     "json-server": "^0.17.0",
     "vue": "^3.2.13",
