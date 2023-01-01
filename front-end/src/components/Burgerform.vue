@@ -6,7 +6,7 @@
             <form id="burger-form" @submit="createBurger">
                 <div class="input-container">
                     <label for="nome">Nome do cliente: </label>
-                    <input type="text" name="nome" id="nome" v-model="nome" placeholder="Digite seu nome">
+                    <input type="text" name="nome" id="nome" v-model="nome" placeholder="Digite seu nome" autocomplete="off">
                 </div>
 
                 <div class="input-container">
