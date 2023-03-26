@@ -5,14 +5,14 @@
         <div>
             <form id="burger-form" @submit="createBurger">
                 <div class="input-container">
-                    <label for="nome">Nome do cliente: </label>
-                    <input type="text" name="nome" id="nome" v-model="nome" placeholder="Digite seu nome" autocomplete="off">
+                    <label for="nome">Client name: </label>
+                    <input type="text" name="nome" id="nome" v-model="nome" placeholder="Type your name" autocomplete="off">
                 </div>
 
                 <div class="input-container">
-                    <label for="pao">Escolha o pão: </label>
+                    <label for="pao">Choose the bread: </label>
                     <select name="pao" id="pao" v-model="pao">
-                        <option value="">Selecione o seu pão</option>
+                        <option value="">Select your bread</option>
                         <option v-for="pao in paes" :key="pao.id" :value="pao.descricao">
                             {{ pao.descricao }}
                         </option>
@@ -20,9 +20,9 @@
                 </div>
 
                 <div class="input-container">
-                    <label for="carne">Escolha a carne: </label>
+                    <label for="carne">Choose meat: </label>
                     <select name="carne" id="carne" v-model="carne">   
-                        <option value="">Selecione o tipo de carne</option>
+                        <option value="">Select the type of meat</option>
                         <option v-for="carne in carnes" :key="carne.id" :value="carne.descricao">
                             {{ carne.descricao }}
                         </option>
@@ -30,7 +30,7 @@
                 </div>
 
                 <div id="opcionais-container" class="input-container">
-                    <label id="opcionais-title" for="opicionais">Selecione os opcionais: </label>
+                    <label id="opcionais-title" for="opicionais">Select the desired options below: </label>
                     <div class="checkbox-container" v-for="opcional in opcionaisdata" :key="opcional.id">
                         <input type="checkbox" name="opcionais" v-model="opcionais" :value="opcional.descricao">
                         <span> {{ opcional.descricao}}</span>
@@ -38,7 +38,7 @@
                 </div>
 
                 <div class="input-container">
-                    <input type="submit" class="submit-btn" value="Criar meu burger!">
+                    <input type="submit" class="submit-btn" value="Order my hamburger!">
                 </div>
             </form>
         </div>
@@ -122,7 +122,7 @@
                         if(res.status === 200 && res.data.affectedRows >= 1) {
 
                             // colocar uma mensagem no sitema
-                            this.msg = `Pedido realizado com sucesso!`;
+                            this.msg = `Order sent successfully!`;
     
                             // Limpar mensagem
                             setTimeout(() => this.msg = "", 3000)

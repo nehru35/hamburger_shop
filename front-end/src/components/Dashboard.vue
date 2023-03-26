@@ -4,11 +4,11 @@
         <div>
             <div id="burger-table-heading">
                 <div class="order-id">#:</div>
-                <div>Cliente</div>
-                <div>Pão</div>
-                <div>Carne</div>
-                <div>Opcionais</div>
-                <div>Ações</div>
+                <div>Client</div>
+                <div>Bread</div>
+                <div>Meat</div>
+                <div>Extra</div>
+                <div>Action</div>
             </div>
         </div>
         <div id="burger-table-rows">
@@ -31,7 +31,7 @@
                             {{ s.descricao }}
                         </option>
                     </select>
-                    <button class="delete-btn" @click="deleteBurger(burger.id)">Cancelar</button>
+                    <button class="delete-btn" @click="deleteBurger(burger.id)">Cancel</button>
                 </div>
             </div>
         </div>
@@ -91,7 +91,7 @@
                     await pedidosService.deletarPedido({id: id}).then((res) => {
                         if (res.status === 200 && res.data.affectedRows >= 1) {
                             // colocar uma mensagem no sitema
-                            this.msg = `Pedido removido com sucesso!`;
+                            this.msg = `Order removed successfully!`;
     
                             // Limpar mensagem
                             setTimeout(() => this.msg = "", 3000)
@@ -116,7 +116,7 @@
                     await pedidosService.actualizarPedido(params).then((res) => {
                         if(res.status === 200 && res.data.affectedRows >= 1) {
                             // colocar uma mensagem no sitema
-                            this.msg = `O pedido foi atualizado para ${option}!`;
+                            this.msg = `The order has been updated to ${option}!`;
 
                             // Limpar mensagem
                             setTimeout(() => this.msg = "", 2000);
