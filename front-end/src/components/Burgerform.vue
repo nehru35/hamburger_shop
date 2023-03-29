@@ -32,8 +32,8 @@
                 <div id="opcionais-container" class="input-container">
                     <label id="opcionais-title" for="opicionais">Select the desired options below: </label>
                     <div class="checkbox-container" v-for="opcional in opcionaisdata" :key="opcional.id">
-                        <input type="checkbox" name="opcionais" v-model="opcionais" :value="opcional.descricao">
-                        <span> {{ opcional.descricao}}</span>
+                        <input type="checkbox" :id="opcional.descricao" name="opcionais" v-model="opcionais" :value="opcional.descricao">
+                        <label :for="opcional.descricao"> {{ opcional.descricao}}</label>
                     </div>
                 </div>
 
@@ -155,12 +155,17 @@
         margin-bottom: 20px;
     }
 
-    label {
+    .input-container > label {
         font-weight: bold;
         margin-bottom: 15px;
         color: #222;
         padding: 5px 10px;
         border-left: 4px solid #FCBA03;
+    }
+
+    .checkbox-container > label {
+        font-weight: bold;
+        margin-left: 10px;
     }
 
     input, select {
